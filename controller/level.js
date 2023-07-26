@@ -46,7 +46,7 @@ const createLevelExpRates=async(req,res)=>{
 
 const getEmpLevelExpRates=async(req,res)=>{
       const get_emp_exp=await user_monthly_expenses.find({})
-         console.log(get_emp_exp)
+         //console.log(get_emp_exp)
       const array=[]
       for(i=0;i<get_emp_exp.length;i++){
             

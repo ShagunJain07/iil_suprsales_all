@@ -24,12 +24,18 @@ const admin=require("./route/Admin")
 const announcement=require("./route/Announcement")
 const area=require("./route/Area")
 const Level=require("./route/level")
+const employee=require("./route/employee")
+
 const assign_customer=require("./route/Assign_Customer")
 app.use("/suprsales_api/Level",Level)
+app.use("/suprsales_api/Employee",employee)
+const customer = require("./route/customer");
+
 app.use("/suprsales_api/Assign_Customer",assign_customer)
 app.use("/suprsales_api/Area",area)
 app.use("/suprsales_api/Announcement",announcement)
 app.use("/suprsales_api/Admin",admin)
+app.use("/suprsales_api/Customer",customer)
 
 
 
