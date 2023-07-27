@@ -15,8 +15,8 @@ const Announcement_master_Schema = new mongoose.Schema({
       created_at:Date,
       IDENTITY_FLAG:Number,
       PDF:String
-
-});
+},
+      {timestamps:true,},);
 
 
 module.exports = mongoose.model('announcement_master', Announcement_master_Schema);

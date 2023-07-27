@@ -1,5 +1,7 @@
 const emp_customer=require("../model/emp_customer_mapping")
-
+const emp_region_mapping=require("../model/emp_region_mapping")
+const farmer_master=require("../model/farmer_master")
+const retailer_master=require("../model/retailer_master")
 const assign=async(req,res)=>{
      try{
       const EMP_ID=req.body.EMP_ID
@@ -25,6 +27,56 @@ catch(error){
 
 }
 
+const selectFarmer=async(req,res)=>{
+      try{
+
+            const emp_id=req.query.id
+
+            const region_data=await emp_region_mapping.find({EMP_ID:emp_id})
+
+            if(region_data.length==0){
+              res.send("no region found for this employee")
+            }
+            else{
+                  const farmer_data=await farmer_master.find({REGION_ID:{$in:region_data},FLAG:1})
+                  if(farmer_data.length==0){
+                        res.send("no farmer found")
+                  }
+                  else{
+                  res.send(farmer_data)
+                  }
+            }
+      }
+      catch(error){
+            res.status(404).send("error")
+      }
+}
+
+
+const selectRetailer=async(req,res)=>{
+      try{
+
+            const emp_id=req.query.id
+
+            const region_data=await emp_region_mapping.find({EMP_ID:emp_id})
+
+            if(region_data.length==0){
+              res.send("no region found for this employee")
+            }
+            else{
+                  const retailer_data=await retailer_master.find({REGION_ID:{$in:region_data},FLAG:1})
+                  if(retailer_data.length==0){
+                        res.send("no retailer found")
+                  }
+                  else{
+                  res.send(retailer_data)
+                  }
+            }
+      }
+      catch(error){
+            res.status(404).send("error")
+      }
+}
 module.exports={
-      assign
+      assign,selectFarmer,selectRetailer
 }
