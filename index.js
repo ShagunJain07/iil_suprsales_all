@@ -27,6 +27,8 @@ const Level=require("./route/level")
 const employee=require("./route/employee")
 const beat_plan=require("./route/Beat_Plan")
 const authorization=require("./route/authorization")
+const usermapping=require("./route/user_mapping")
+app.use("/suprsales_api/UserMapping",usermapping)
 
 const role=require("./route/role")
 app.use("/suprsales_api/authorization",authorization)
