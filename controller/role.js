@@ -21,8 +21,8 @@ const api_update=async(req,res)=>{
       const role_description=req.body.ROLE_DESCRIPTION
       const auth_id=req.body.AUTH_ID
       const flag=req.body.FLAG
-
-      const delete_role=await role_master.deleteOne({ROLE_ID:role_id})
+      console.log(role_description)
+      const delete_role=await role_master.deleteMany({ROLE_ID:role_id})
       for(i=0;i<auth_id.length;i++){
             const insert_role=await role_master.insertMany({ROLE_ID:role_id,ROLE_NAME:role_name,ROLE_DESCRIPTION:role_description,AUTH_ID:auth_id[i],FLAG:flag})
       }
