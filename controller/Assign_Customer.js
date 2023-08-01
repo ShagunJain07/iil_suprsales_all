@@ -31,14 +31,16 @@ const selectFarmer=async(req,res)=>{
       try{
 
             const emp_id=req.query.id
-
+            const region_array=[]
             const region_data=await emp_region_mapping.find({EMP_ID:emp_id})
-
-            if(region_data.length==0){
+            for(i=0;i<region_data.length;i++){
+                  region_array.push(region_data[i])
+                } 
+            if(region_array.length==0){
               res.send("no region found for this employee")
             }
             else{
-                  const farmer_data=await farmer_master.find({REGION_ID:{$in:region_data},FLAG:1})
+                  const farmer_data=await farmer_master.find({REGION_ID:{$in:region_array},FLAG:1})
                   if(farmer_data.length==0){
                         res.send("no farmer found")
                   }
@@ -57,14 +59,16 @@ const selectRetailer=async(req,res)=>{
       try{
 
             const emp_id=req.query.id
-
+             const region_array=[]
             const region_data=await emp_region_mapping.find({EMP_ID:emp_id})
-
-            if(region_data.length==0){
+            for(i=0;i<region_data.length;i++){
+              region_array.push(region_data[i])
+            }
+            if(region_array.length==0){
               res.send("no region found for this employee")
             }
             else{
-                  const retailer_data=await retailer_master.find({REGION_ID:{$in:region_data},FLAG:1})
+                  const retailer_data=await retailer_master.find({REGION_ID:{$in:region_array},FLAG:1})
                   if(retailer_data.length==0){
                         res.send("no retailer found")
                   }

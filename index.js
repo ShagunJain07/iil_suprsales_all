@@ -25,12 +25,16 @@ const announcement=require("./route/Announcement")
 const area=require("./route/Area")
 const Level=require("./route/level")
 const employee=require("./route/employee")
+const beat_plan=require("./route/Beat_Plan")
+const role=require("./route/role")
+
+app.use("/suprsales_api/Role",role)
 
 const assign_customer=require("./route/Assign_Customer")
 app.use("/suprsales_api/Level",Level)
 app.use("/suprsales_api/Employee",employee)
 const customer = require("./route/customer");
-
+app.use("/suprsales_api/Beat_Plan",beat_plan)
 app.use("/suprsales_api/Assign_Customer",assign_customer)
 app.use("/suprsales_api/Area",area)
 app.use("/suprsales_api/Announcement",announcement)
