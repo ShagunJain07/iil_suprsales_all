@@ -89,12 +89,20 @@ const api_update=async(req,res)=>{
       const getEmpWithNoRole=async(req,res)=>{
       try{
             const all_user=[]
+            const all_emp=[]
          const user_data=await usermapping.find({})
          for(i=0;i<user_data.length;i++){
             all_user.push(user_data[i].EMP_ID)
          }
-         const emp_data=await employee_master.find({EMP_ID:{$nin:all_user}},{EMP_ID:1,EMP_NAME:1})
-         res.send(emp_data)
+         const emp_data=await employee_master.find({EMP_ID:{$nin:all_user}})
+         for(i=0;i<emp_data.length;i++){
+            const obj1={
+                  "EMP_ID":emp_data[i].EMP_ID,
+                  "EMP_NAME":emp_data[i].EMP_NAME
+            }
+            all_emp.push(obj1)
+         }
+         res.send(all_emp)
       }
       catch(error){
             res.status(400).send("error")
