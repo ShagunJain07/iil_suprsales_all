@@ -62,7 +62,7 @@ const api_update=async(req,res)=>{
         const delete_data=await usermapping.deleteMany({EMP_ID:emp_id})
         
         for(i=0;i<roles.length;i++){
-            const update_data=await usermapping.insertMany({EMP_ID:emp_id,ROLE_ID:roles[i],FLAG:flags[i]})
+            const update_data=await usermapping.insertMany({EMP_ID:emp_id,ROLE_ID:roles[i],FLAG:flags})
             console.log(update_data)
         }
         res.send("updated successfully")
@@ -93,7 +93,7 @@ const api_update=async(req,res)=>{
          for(i=0;i<user_data.length;i++){
             all_user.push(user_data[i].EMP_ID)
          }
-         const emp_data=await employee_master.find({EMP_ID:{$nin:all_user}})
+         const emp_data=await employee_master.find({EMP_ID:{$nin:all_user}},{EMP_ID:1,EMP_NAME:1})
          res.send(emp_data)
       }
       catch(error){
