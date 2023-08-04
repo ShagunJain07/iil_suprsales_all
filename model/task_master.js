@@ -1,18 +1,18 @@
 const mongoose = require('mongoose');
 
 const taskMasterSchema = new mongoose.Schema({
-  TASK_ID: { type: Number, required: true },
-  TASK_NAME: { type: String, required: true },
-  START_DATE: { type: Date, required: true },
-  COMPLETION_STATUS: { type: Number, required: true },
-  CREATED_ON: { type: Date, required: true },
-  CREATED_BY: { type: String, required: true },
-  DUE_DATE: { type: Date, required: true },
-  PRIORITY: { type: Number, required: true },
-  NOTES: { type: String, required: true },
+  TASK_ID: { type: Number },
+  TASK_NAME: { type: String },
+  START_DATE: { type: Date },
+  COMPLETION_STATUS: { type: Number },
+  CREATED_ON: { type: Date },
+  CREATED_BY: { type: String },
+  DUE_DATE: { type: Date },
+  PRIORITY: { type: Number },
+  NOTES: { type: String },
   UPDATED_ON: { type: Date, default: Date.now },
-  COLOR: { type: Number, required: true },
-  FLAG: { type: Boolean, required: true }
+  COLOR: { type: Number },
+  FLAG: { type: Boolean }
 });
 
 const TaskMaster = mongoose.model('task_master', taskMasterSchema);

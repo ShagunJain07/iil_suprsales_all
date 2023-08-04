@@ -1,13 +1,11 @@
 const mongoose = require('mongoose');
 
 const taskActivityMappingSchema = new mongoose.Schema({
-  task_id: {
-    type: Number,
-    required: true
+  TASK_ID: {
+    type: Number
   },
-  activity_id: {
-    type: Number,
-    required: true
+  ACTIVITY_ID: {
+    type: Number
   }
 });
 

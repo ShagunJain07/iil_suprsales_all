@@ -8,6 +8,6 @@ const packingSkuMasterSchema = new mongoose.Schema({
   GROUP_ID: { type: String},
   FLAG: { type: String},
   SKU_CATEGORY: { type: String},
-}, { collection: 'packing_sku_master' });
+}, { collection: 'packing_sku_masters' });
 
 module.exports = mongoose.model('packing_sku_master', packingSkuMasterSchema);

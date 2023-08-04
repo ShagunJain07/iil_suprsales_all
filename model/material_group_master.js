@@ -2,20 +2,16 @@ const mongoose = require('mongoose');
 
 const materialGroupMasterSchema = new mongoose.Schema({
   GROUP_ID: {
-    type: String,
-    required: true
+    type: String
   },
   GROUP_NAME: {
-    type: String,
-    required: true
+    type: String
   },
   CATEGORY_ID: {
-    type: String,
-    required: true
+    type: String
   },
   FLAG: {
-    type: Boolean,
-    required: true
+    type: Boolean
   }
 });
 

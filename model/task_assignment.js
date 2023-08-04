@@ -1,17 +1,14 @@
 const mongoose = require('mongoose');
 
 const taskAssignmentSchema = new mongoose.Schema({
-  task_id: {
-    type: Number,
-    required: true,
+  TASK_ID: {
+    type: Number
   },
-  assigned_to: {
-    type: String,
-    required: true,
+  ASSIGNED_TO: {
+    type: String
   },
-  flag: {
+  FLAG: {
     type: Boolean,
-    required: true,
     default: true,
   },
 });

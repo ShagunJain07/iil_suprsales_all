@@ -8,7 +8,7 @@ const api_create=async(req,res)=>{
       const emp_id=req.body.EMP_ID
       const role_id=req.body.ROLE_ID
 
-      for(i=0;i<=emp_id.length;i++){
+      for(i=0;i<emp_id.length;i++){
             //console.log(emp_id[i],role_id[i])
             const insert_data=await usermapping.insertMany({EMP_ID:emp_id[i],ROLE_ID:role_id[i]})
 
@@ -112,32 +112,36 @@ const api_update=async(req,res)=>{
       
       const index=async(req,res)=>{
             try{
-            const all_data=[]
-            const get_data=await usermapping.find({},{_id:0,__v:0})
-            for(j=0;j<get_data.length;j++){
-            const role_data=await role.find({ROLE_ID:get_data[j].ROLE_ID},{_id:0,__v:0})
-            const final_data={
-                  FLAG: get_data[j].FLAG,
-                   EMP_ID: get_data[j].EMP_ID, 
-                   ROLE_ID: get_data[j].ROLE_ID,
-                   ROLE:[]
-            }
-            for(i=0;i<role_data.length;i++){
-                  final_data.ROLE.push({"FLAG":role_data[i].FLAG,
-                  "ROLE_ID": role_data[i].ROLE_ID,
-                  "ROLE_NAME": role_data[i].ROLE_NAME,
-                  "ROLE_DESCRIPTION":role_data[i].ROLE_DESCRIPTION,
-                  "AUTH_ID":role_data[i].AUTH_ID})
-            }
-      all_data.push(final_data)
-            
-            //       const auth_data=await auth.find({AUTH_ID:role_data[i].AUTH_ID})
-            //       //console.log(final_data[0].ROLE[i].auth_detail)
-            //     final_data[0].auth_detail.push(auth_data[0])
-            }
-           
-           res.send(all_data)
-      
+                  const array1=[]
+                  const emp=await employee_master.distinct('EMP_ID')
+                  for(i=0;i<emp.length;i++){
+                        const emp_datas=await employee_master.find({EMP_ID:emp[i]})
+                        const all_data=await usermapping.distinct('ROLE_ID',{EMP_ID:emp[i]})
+                        const obj2={
+                              "EMP_ID":emp[i],
+                              "EMP_NAME":emp_datas[0].EMP_NAME,
+                              "FLAG":emp_datas[0].FLAG,
+                              "ROLE":[]
+                        }
+                        for(j=0;j<all_data.length;j++){
+                             
+                          const role_data=await role.find({ROLE_ID:all_data[j]},{ROLE_NAME:1,_id:0,FLAG:1})
+                           
+                          obj2.ROLE.push({
+                              "ROLE_ID":all_data[j],
+                              "ROLE_NAME":role_data[0].ROLE_NAME,
+                              "FLAG":role_data[0].FLAG
+                          })
+                        array1.push(obj2)
+                        
+                         // console.log(role_data)
+                        }
+                       
+                       
+                  }
+                  res.send(array1)
+                //  console.log(array1)
+                 
       }
       catch(error){
             res.status(400).send("error")
