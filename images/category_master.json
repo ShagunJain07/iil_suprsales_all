@@ -1,0 +1,14 @@
+[
+{"type":"header","version":"5.1.1","comment":"Export to JSON plugin for PHPMyAdmin"},
+{"type":"database","name":"suprsales_db_prdd"},
+{"type":"table","name":"category_master","database":"suprsales_db_prdd","data":
+[
+{"CATEGORY_ID":"1","CATEGORY_NAME":"GR","FLAG":"1"},
+{"CATEGORY_ID":"2","CATEGORY_NAME":"LI","FLAG":"1"},
+{"CATEGORY_ID":"3","CATEGORY_NAME":"PO","FLAG":"1"},
+{"CATEGORY_ID":"4","CATEGORY_NAME":"RM","FLAG":"1"},
+{"CATEGORY_ID":"5","CATEGORY_NAME":"WG","FLAG":"1"},
+{"CATEGORY_ID":"6","CATEGORY_NAME":"","FLAG":"1"}
+]
+}
+]

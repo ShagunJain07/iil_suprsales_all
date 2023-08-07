@@ -2,45 +2,35 @@ const mongoose = require('mongoose');
 
 const orderMasterSchema = new mongoose.Schema({
   ORDER_ID: {
-    type: String,
-    required: true
+    type: String
   },
   ORDER_DATE: {
     type: Date,
-    default: Date.now,
-    required: true
+    default: Date.now
   },
   CREATED_BY: {
-    type: String,
-    required: true
+    type: String
   },
   CUSTOMER_ID: {
-    type: Number,
-    required: true
+    type: Number
   },
   CUST_TYPE_CODE: {
-    type: String,
-    required: true
+    type: String
   },
   PLANT_ID: {
-    type: Number,
-    required: true
+    type: Number
   },
   TOTAL_ORDER_VALUE: {
-    type: Number,
-    required: true
+    type: Number
   },
   REMARKS: {
-    type: String,
-    required: true
+    type: String
   },
   STATUS: {
-    type: String,
-    required: true
+    type: String
   },
   CUSTOMER_ORDER_ID: {
-    type: Number,
-    required: true
+    type: Number
   }
 });
 

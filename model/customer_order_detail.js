@@ -3,24 +3,19 @@ const Schema = mongoose.Schema;
 
 const customerOrderDetailSchema = new Schema({
   ORDER_ID: {
-    type: Number,
-    required: true
+    type: Number
   },
   SKU_ID: {
-    type: String,
-    required: true
+    type: String
   },
   SKU_QUANTITY: {
-    type: Number,
-    required: true
+    type: Number
   },
   TOTAL_SKU_VALUE: {
-    type: Number,
-    required: true
+    type: Number
   },
   STATUS: {
-    type: Number,
-    required: true
+    type: Number
   }
 }, { collection: 'customer_order_detail' });
 

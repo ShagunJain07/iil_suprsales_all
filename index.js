@@ -39,6 +39,9 @@ app.use("/suprsales_api/Role",role)
 
 const assign_customer=require("./route/Assign_Customer")
 const Task=require("./route/Task")
+const CustomerOrder=require("./route/customerOrder")
+app.use("/suprsales_api/customerOrder",CustomerOrder)
+
 app.use("/suprsales_api/Task",Task)
 
 app.use("/suprsales_api/Beat_Plan",beat_plan)
