@@ -45,7 +45,7 @@ const createOrder = async (req, res) => {
 
             const count_order = await customer_order.countDocuments()
             const new_count = count_order + 1
-            const order_master = await customer_order.insertMany({ ORDER_ID: new_count, APPROVED_BY: APPROVED_BY, CUSTOMER_ID: CUSTOMER_ID, TOTAL_ORDER_VALUE: TOTAL_ORDER_VALUE, APPROVE_STATUS: 2, ACKNOWLEDGE_STATUS: 1 })
+            const order_master = await customer_order.insertMany({ ORDER_ID: new_count, APPROVED_BY: APPROVED_BY, CUSTOMER_ID: CUSTOMER_ID, TOTAL_ORDER_VALUE: TOTAL_ORDER_VALUE, APPROVE_STATUS: 2, ACKNOWLEDGE_STATUS: 1,PLANT_ID:0 })
             for (i = 0; i < IDs.length; i++) {
                   const order_detail = await customer_order_detail.insertMany({ ORDER_ID: new_count, SKU_ID: IDs[i], SKU_QUANTITY: QUANTITY[i], TOTAL_SKU_VALUE: SKU_VALUE[i], STATUS: 3 })
             }
@@ -77,7 +77,7 @@ const createOrderMob = async (req, res) => {
 
             const count_order = await customer_order.countDocuments()
             const new_count = count_order + 1
-            const order_master = await customer_order.insertMany({ ORDER_ID: new_count, APPROVED_BY: APPROVED_BY, CUSTOMER_ID: CUSTOMER_ID, TOTAL_ORDER_VALUE: TOTAL_ORDER_VALUE, APPROVE_STATUS: 2, ACKNOWLEDGE_STATUS: 1 })
+            const order_master = await customer_order.insertMany({ ORDER_ID: new_count, APPROVED_BY: APPROVED_BY, CUSTOMER_ID: CUSTOMER_ID, TOTAL_ORDER_VALUE: TOTAL_ORDER_VALUE, APPROVE_STATUS: 2, ACKNOWLEDGE_STATUS: 1,PLANT_ID:0})
             for (i = 0; i < IDs.length; i++) {
                   const order_detail = await customer_order_detail.insertMany({ ORDER_ID: new_count, SKU_ID: IDs[i], SKU_QUANTITY: QUANTITY[i], TOTAL_SKU_VALUE: SKU_VALUE[i], STATUS: 3 })
             }
