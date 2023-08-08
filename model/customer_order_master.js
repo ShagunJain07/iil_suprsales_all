@@ -19,7 +19,7 @@ const customerOrderMasterSchema = new mongoose.Schema({
     type: String
   },
   PLANT_ID: {
-    type: Number
+    type: String
   },
   TOTAL_ORDER_VALUE: {
     type: Number

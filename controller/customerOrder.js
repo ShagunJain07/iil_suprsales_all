@@ -24,6 +24,10 @@ const category_master=require("../model/category_master")
 
 const region_master=require("../model/region_master")
 
+const emp_region_mapping=require("../model/emp_region_mapping")
+
+const stock_master=require("../model/stock_master")
+
 const createOrder = async (req, res) => {
       try {
 
@@ -98,52 +102,78 @@ const getCustomerOrder = async (req, res) => {
 
             const array1 = []
             const array2 = []
-            const customer_order_master_data = await customer_order.find({})
+            const customer_order_master_data = await customer_order.find({APPROVED_BY:APPROVED_BY})
+            console.log("customer_order_master_data",customer_order_master_data)
             for (i = 0; i < customer_order_master_data.length; i++) {
                   const order_master_detail = await order_master.find({ CUSTOMER_ORDER_ID: customer_order_master_data[i].ORDER_ID, CUSTOMER_ID: customer_order_master_data[i].CUSTOMER_ID })
-
-                  const invoice_data = await invoice_master.find({ APPROVED_BY: APPROVED_BY, SUPRSALES_ORDER_NO: order_master_detail[0].ORDER_ID, CUSTOMER_ID: order_master_detail[0].CUSTOMER_ID })
-
+// console.log("order_master_detail",order_master_detail)
+                  const invoice_data = await invoice_master.find({SUPRSALES_ORDER_NO: order_master_detail[0].ORDER_ID, CUSTOMER_ID: order_master_detail[0].CUSTOMER_ID })
+// console.log("invoice_data",invoice_data)
                   const distributor_data = await distributor_master.find({ DISTRIBUTOR_ID: customer_order_master_data[i].CUSTOMER_ID })
-
+// console.log("distributor_data",distributor_data)
                   const plant_data = await plant_master.find({ PLANT_ID: customer_order_master_data[i].PLANT_ID })
+// console.log("plant_data",plant_data)
+if(customer_order_master_data[i].PLANT_ID==0){
+      const object1 = {
+            "INVOICE_NO": invoice_data[0].INVOICE_NO,
+            "INVOICE_DATE": invoice_data[0].INVOICE_DATE,
+            "ORDER_ID": customer_order_master_data[i].ORDER_ID,
+            "ORDER_DATE": customer_order_master_data[i].ORDER_DATE,
+           // "PLANT_ID": customer_order_master_data[i].PLANT_ID,
+            "APPROVE_STATUS": customer_order_master_data[i].APPROVE_STATUS,
+            "ACKNOWLEDGE_STATUS": customer_order_master_data[i].ACKNOWLEDGE_STATUS,
+            "TOTAL_ORDER_VALUE": customer_order_master_data[i].TOTAL_ORDER_VALUE,
+            "REMARKS": customer_order_master_data[i].REMARKS,
+            "CUSTOMER_ID": customer_order_master_data[i].CUSTOMER_ID,
+            "CUSTOMER_NAME": distributor_data[0].DISTRIBUTOR_NAME,
+          //  "PLANT_DESCRIPTION": plant_data[0].PLANT_DESCRIPTION
 
-                  const object1 = {
-                        "INVOICE_NO": invoice_data[0].INVOICE_NO,
-                        "INVOICE_DATE": invoice_data[0].INVOICE_DATE,
-                        "ORDER_ID": customer_order_master_data[i].ORDER_ID,
-                        "ORDER_DATE": customer_order_master_data[i].ORDER_DATE,
-                        "PLANT_ID": customer_order_master_data[i].PLANT_ID,
-                        "APPROVE_STATUS": customer_order_master_data[i].APPROVE_STATUS,
-                        "ACKNOWLEDGE_STATUS": customer_order_master_data[i].ACKNOWLEDGE_STATUS,
-                        "TOTAL_ORDER_VALUE": customer_order_master_data[i].TOTAL_ORDER_VALUE,
-                        "REMARKS": customer_order_master_data[i].REMARKS,
-                        "CUSTOMER_ID": customer_order_master_data[i].CUSTOMER_ID,
-                        "CUSTOMER_NAME": distributor_data[0].DISTRIBUTOR_NAME,
-                        "PLANT_DESCRIPTION": plant_data[0].PLANT_DESCRIPTION
+      }
+      array1.push(object1)
 
-                  }
-                  array1.push(object1)
+}
+else{
+      const object1 = {
+            "INVOICE_NO": invoice_data[0].INVOICE_NO,
+            "INVOICE_DATE": invoice_data[0].INVOICE_DATE,
+            "ORDER_ID": customer_order_master_data[i].ORDER_ID,
+            "ORDER_DATE": customer_order_master_data[i].ORDER_DATE,
+            "PLANT_ID": customer_order_master_data[i].PLANT_ID,
+            "APPROVE_STATUS": customer_order_master_data[i].APPROVE_STATUS,
+            "ACKNOWLEDGE_STATUS": customer_order_master_data[i].ACKNOWLEDGE_STATUS,
+            "TOTAL_ORDER_VALUE": customer_order_master_data[i].TOTAL_ORDER_VALUE,
+            "REMARKS": customer_order_master_data[i].REMARKS,
+            "CUSTOMER_ID": customer_order_master_data[i].CUSTOMER_ID,
+            "CUSTOMER_NAME": distributor_data[0].DISTRIBUTOR_NAME,
+            "PLANT_DESCRIPTION": plant_data[0].PLANT_DESCRIPTION
+
+      }
+      //console.log("object1",object1)
+      array1.push(object1)
+
+}
+                  
             }
 
             for (j = 0; j < array1.length; j++) {
-                  if (STATUS.length != 0 && START_DATE != null) {
-                        console.log("inside1")
+                  if (STATUS.length != 0 && START_DATE.length!= 0) {
+                       // console.log("inside1")
                         if (array1[j].APPROVE_STATUS == STATUS && (array[j].ORDER_DATE >= START_DATE && array[j].ORDER_DATE <= END_DATE)) {
                               array2.push(array1[j])
                         }
                   }
 
-                  else if (STATUS.length != 0 && START_DATE == null) {
-                        console.log("inside2")
+                  else if (STATUS.length != 0 && START_DATE.length==0) {
+                        // console.log("inside2")
+                        // console.log("array1",array1[j])
 
                         if (array1[j].APPROVE_STATUS == STATUS) {
                               array2.push(array1[j])
                         }
                   }
 
-                  if (STATUS.length == 0 && START_DATE != null) {
-                        console.log("inside3")
+                  if (STATUS.length == 0 && START_DATE.length!=0) {
+                        // console.log("inside3")
 
                         if (array[j].ORDER_DATE >= START_DATE && array[j].ORDER_DATE <= END_DATE) {
                               array2.push(array1[j])
@@ -171,6 +201,7 @@ const getCustomerOrderByCustID = async (req, res) => {
             const array1 = []
             const array2 = []
             const customer_order_master_data = await customer_order.find({ CUSTOMER_ID: CUSTOMER_ID, ORDER_DATE: { $lte: END_DATE, $gte: START_DATE } })
+
             for (i = 0; i < customer_order_master_data.length; i++) {
                   const order_master_detail = await order_master.find({ CUSTOMER_ORDER_ID: customer_order_master_data[i].ORDER_ID, CUSTOMER_ID: customer_order_master_data[i].CUSTOMER_ID })
 
@@ -199,14 +230,14 @@ const getCustomerOrderByCustID = async (req, res) => {
             }
 
             for (j = 0; j < array1.length; j++) {
-                  if (STATUS.length != 0 && START_DATE != null) {
-                        console.log("inside1")
-                        if (array1[j].APPROVE_STATUS == STATUS && (array[j].ORDER_DATE >= START_DATE && array[j].ORDER_DATE <= END_DATE)) {
+                  if (STATUS.length != 0 && START_DATE.length!=0) {
+                       // console.log("inside1",array1[j])
+                        if (array1[j].APPROVE_STATUS == STATUS) {
                               array2.push(array1[j])
                         }
                   }
 
-                  else if (STATUS.length != 0 && START_DATE == null) {
+                  else if (STATUS.length != 0 && START_DATE.length==0) {
                         console.log("inside2")
 
                         if (array1[j].APPROVE_STATUS == STATUS) {
@@ -214,10 +245,10 @@ const getCustomerOrderByCustID = async (req, res) => {
                         }
                   }
 
-                  if (STATUS.length == 0 && START_DATE != null) {
+                  if (STATUS.length == 0 && START_DATE.length!=0) {
                         console.log("inside3")
 
-                        if (array[j].ORDER_DATE >= START_DATE && array[j].ORDER_DATE <= END_DATE) {
+                        if (array1[j].ORDER_DATE >= START_DATE && array1[j].ORDER_DATE <= END_DATE) {
                               array2.push(array1[j])
                         }
                   }
@@ -227,7 +258,7 @@ const getCustomerOrderByCustID = async (req, res) => {
             res.send(array2)
       }
       catch (error) {
-            //console.log(error)
+            console.log(error)
             res.status(404).send("error")
       }
 }
@@ -292,7 +323,9 @@ const getCustomerOrderByCustIDMob = async (req, res) => {
                               UNIT_ID:sku_descripton_data[0].UNIT_ID,
                               UPDATED_ON:price_data[0].UPDATED_ON
                         }
-                        object1.ORDER_DETAIL[0].push(object2)
+                        // console.log(object2)
+                        // console.log(object1.ORDER_DETAIL)
+                        object1.ORDER_DETAIL.push(object2)
                   }
 array1.push(object1)
 
@@ -366,7 +399,7 @@ const getCustomerOrderByEmpIDMob=async(req,res)=>{
                   UNIT_ID:sku_descripton_data[0].UNIT_ID,
                   UPDATED_ON:price_data[0].UPDATED_ON
             }
-            object1.ORDER_DETAIL[0].push(object2)
+            object1.ORDER_DETAIL.push(object2)
            }
            array1.push(object1)
       }
@@ -374,6 +407,7 @@ const getCustomerOrderByEmpIDMob=async(req,res)=>{
 
       }
       catch(error){
+            console.log(error)
             res.status(404).send("error")
       }
 }
@@ -394,6 +428,8 @@ const getCustomerOrderDetail=async(req,res)=>{
             for(i=0;i<customer_order_detail_data.length;i++){
                   const sku_descripton_data=await packing_sku_master.find({SKU_ID:customer_order_detail_data[i].SKU_ID})
 
+                  // console.log(distributor_data[0].REGION_ID)
+                  // console.log(customer_order_detail_data[i].SKU_ID)
                   const price_data=await price_master.find({REGION_ID:distributor_data[0].REGION_ID,SKU_ID:customer_order_detail_data[i].SKU_ID})
 
                   const object1={
@@ -410,6 +446,31 @@ array1.push(object1)
             }
             res.send(array1)
       }
+      catch(error){
+            console.log(error)
+            res.status(404).send("error")
+      }
+}
+
+
+const skuListByCustomerId=async(req,res)=>{
+      try{
+            const CUSTOMER_ID=req.query.id
+const array_emp=[]
+const array_price=[]
+            const mapping=await emp_customer_mapping.find({})
+
+            for(i=0;i<mapping.length;i++){
+array_emp.push(mapping[i].EMP_ID)
+            }
+            const region_data=await emp_region_mapping.find({EMP_ID:{$in:array_emp}})
+               for(j=0;j<region_data.length;j++)
+            {
+                  array_price.push(region_data[j].REGION_ID)
+            }
+                  const price_data=await price_master.find({REGION_ID:{$in:array_price}})
+            
+            }
       catch(error){
             console.log(error)
             res.status(404).send("error")

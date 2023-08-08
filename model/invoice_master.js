@@ -34,6 +34,6 @@ const InvoiceMasterSchema = new Schema({
 
 
 
-const InvoiceMaster = mongoose.model('invoice_master', InvoiceMasterSchema);
+const InvoiceMaster = mongoose.model('invoice_masters', InvoiceMasterSchema);
 
 module.exports = InvoiceMaster;

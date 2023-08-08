@@ -2,20 +2,16 @@ const mongoose = require('mongoose');
 
 const orderDetailsSchema = new mongoose.Schema({
   ORDER_ID: {
-    type: String,
-    required: true
+    type: String
   },
   SKU_ID: {
-    type: String,
-    required: true
+    type: String
   },
   SKU_QUANTITY: {
-    type: Number,
-    required: true
+    type: Number
   },
   TOTAL_SKU_VALUE: {
-    type: Number,
-    required: true
+    type: Number
   }
 });
 

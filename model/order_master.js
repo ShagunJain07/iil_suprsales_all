@@ -12,7 +12,7 @@ const orderMasterSchema = new mongoose.Schema({
     type: String
   },
   CUSTOMER_ID: {
-    type: Number
+    type: String
   },
   CUST_TYPE_CODE: {
     type: String

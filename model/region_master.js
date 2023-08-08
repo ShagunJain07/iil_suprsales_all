@@ -3,28 +3,22 @@ const { Schema } = mongoose;
 
 const regionMasterSchema = new Schema({
   REGION_ID: {
-    type: String,
-    required: true
+    type: String
   },
   REGION_NAME: {
-    type: String,
-    required: true
+    type: String
   },
   ZONE_ID: {
-    type: Number,
-    required: true
+    type: Number
   },
   REGION_CENTER_LAT: {
-    type: Number,
-    required: true
+    type: Number
   },
   REGION_CENTER_LONG: {
-    type: Number,
-    required: true
+    type: Number
   },
   FLAG: {
     type: Boolean,
-    required: true,
     default: true
   }
 });
