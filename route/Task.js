@@ -29,6 +29,12 @@ router.get("/deligatedTaskPriorityChart",controller.deligatedTaskPriorityChart)
 router.get("/deligatedTaskStatusChart",controller.deligatedTaskStatusChart)
 router.get("/deligatedTeamStatusChart",controller.deligatedTeamStatusChart)
 router.get("/getAllActivityByEmpMob.php",controller.getAllActivityByEmpMob)
+router.get("/getTaskByEmp",controller.getTaskByEmp)
+router.get("/getTaskDetail",controller.getTaskDetail)
+router.get("/getMyDeligatedTask",controller.getMyDeligatedTask)
+router.get("/getMyAssignedTask",controller.getMyAssignedTask)
+router.get("/updateTask",controller.updateTask)
+
 router.post(
       '/uploadTaskAttachmentMob.php',
       upload.fields([{ name: 'TASK_ATTACHMENT', maxCount: 10 }]),

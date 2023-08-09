@@ -6,7 +6,8 @@ const task_activity_mapping = require("../model/task_activity_mapping")
 const activity_owner_master = require("../model/activity_owner_master")
 const activity_deligation_master = require("../model/activity_deligation_master")
 const task_attachment = require("../model/task_attachment")
-const activity_attachment=require("../model/activity_attachment")
+const activity_attachment = require("../model/activity_attachment")
+// const activity_master = require("../model/activity_master")
 const assignedTaskPriorityChart = async (req, res) => {
 
       try {
@@ -566,8 +567,8 @@ const uploadTaskAttachment = async (req, res) => {
 }
 
 
-const uploadActivityAttachmentMob=async(req,res)=>{
-      try{
+const uploadActivityAttachmentMob = async (req, res) => {
+      try {
             const ACTIVITY_ID = req.query.id
             const ACTIVITY_ATTACHMENTs = req.files.ACTIVITY_ATTACHMENT
             // const task_length = TASK_ATTACHMENTs.length
@@ -576,18 +577,18 @@ const uploadActivityAttachmentMob=async(req,res)=>{
                   const task_attachment_add = await activity_attachment.insertMany({ ACTIVITY_ID: ACTIVITY_ID, ACTIVITY_ATTACHMENT: ACTIVITY_ATTACHMENTs[i].originalname })
 
             }
-            res.send("Activity attachment Inserted Successfully") 
+            res.send("Activity attachment Inserted Successfully")
 
       }
-      catch(error){
-             //console.log(error)
-             res.status(404).send("error")
+      catch (error) {
+            //console.log(error)
+            res.status(404).send("error")
 
       }
 }
 
-const uploadActivityAttachment=async(req,res)=>{
-      try{
+const uploadActivityAttachment = async (req, res) => {
+      try {
             const ACTIVITY_ID = req.query.id
             const ACTIVITY_ATTACHMENTs = req.files.ACTIVITY_ATTACHMENT
             // const task_length = TASK_ATTACHMENTs.length
@@ -596,15 +597,357 @@ const uploadActivityAttachment=async(req,res)=>{
                   const task_attachment_add = await activity_attachment.insertMany({ ACTIVITY_ID: ACTIVITY_ID, ACTIVITY_ATTACHMENT: ACTIVITY_ATTACHMENTs[i].originalname })
 
             }
-            res.send("Activity attachment Inserted Successfully") 
+            res.send("Activity attachment Inserted Successfully")
 
       }
-      catch(error){
-             //console.log(error)
-             res.status(404).send("error")
+      catch (error) {
+            //console.log(error)
+            res.status(404).send("error")
 
       }
 }
+
+const getTaskByEmp = async (req, res) => {
+      try {
+            const CREATED_BY = req.query.id
+
+            const array1 = []
+
+            const task_master_data = await task_master.find({ CREATED_BY: CREATED_BY })
+
+            const emp_data = await employee_master.find({ EMP_ID: CREATED_BY })
+
+            const count_activity = await task_activity_mapping.countDocuments({ TASK_ID: task_master_data[0].TASK_ID })
+
+            const object1 = {
+                  "NO_OF_ACTIVITIES": count_activity,
+                  "TASK_ID": task_master_data[0].TASK_ID,
+                  "TASK_NAME": task_master_data[0].TASK_NAME,
+                  "START_DATE": task_master_data[0].START_DATE,
+                  "COMPLETION_STATUS": task_master_data[0].COMPLETION_STATUS,
+                  "CREATED_BY": task_master_data[0].CREATED_BY,
+                  "CREATED_BY_NAME": emp_data[0].EMP_NAME,
+                  "CREATED_BY_IMAGE": emp_data[0].EMP_IMAGE,
+                  "DUE_DATE": task_master_data[0].DUE_DATE,
+                  "PRIORITY": task_master_data[0].PRIORITY,
+                  "NOTES": task_master_data[0].NOTES,
+                  "UPDATED_ON": task_master_data[0].UPDATED_ON,
+                  "COLOR": task_master_data[0].COLOR,
+                  "FLAG": task_master_data[0].FLAG,
+                  "ASSIGNED_TO": []
+            }
+
+            const task_assignment_data = await task_assignment.find({ TASK_ID: task_master_data[0].TASK_ID })
+            const emp_data_found = await employee_master.find({ EMP_ID: task_assignment_data[0].ASSIGNED_TO })
+
+            const object2 = {
+                  "EMP_ID": emp_data_found[0].EMP_ID,
+                  "EMP_NAME": emp_data_found[0].EMP_NAME,
+                  "EMP_IMAGE": emp_data_found[0].EMP_IMAGE
+            }
+            object1.ASSIGNED_TO.push(object2)
+            array1.push(object1)
+
+
+            res.send(array1)
+      }
+      catch (error) {
+            // console.log(error)
+            res.status(404).send("error")
+
+      }
+}
+
+const getTaskDetail = async (req, res) => {
+      try {
+
+            const TASK_ID = req.query.id
+            const array1 = []
+            const task_master_data = await task_master.find({ TASK_ID: TASK_ID })
+            for (i = 0; i < task_master_data.length; i++) {
+                  const emp_data = await employee_master.find({ EMP_ID: task_master_data[i].CREATED_BY })
+
+                  const count_activity = await task_activity_mapping.countDocuments({ TASK_ID: task_master_data[i].TASK_ID })
+                  const object1 = {
+                        "NO_OF_ACTIVITIES": count_activity,
+                        "TASK_ID": task_master_data[i].TASK_ID,
+                        "TASK_NAME": task_master_data[i].TASK_NAME,
+                        "START_DATE": task_master_data[i].START_DATE,
+                        "COMPLETION_STATUS": task_master_data[i].COMPLETION_STATUS,
+                        "CREATED_BY": task_master_data[i].CREATED_BY,
+                        "CREATED_BY_NAME": emp_data[0].EMP_NAME,
+                        "CREATED_BY_IMAGE": emp_data[0].EMP_IMAGE,
+                        "DUE_DATE": task_master_data[i].DUE_DATE,
+                        "PRIORITY": task_master_data[i].PRIORITY,
+                        "NOTES": task_master_data[i].NOTES,
+                        "UPDATED_ON": task_master_data[i].UPDATED_ON,
+                        "COLOR": task_master_data[i].COLOR,
+                        "FLAG": task_master_data[i].FLAG,
+                        "TEAM": [],
+                        "ACTIVITY": [],
+                        "ATTACHMENT": []
+                  }
+                  const task_assignment_data = await task_assignment.find({ TASK_ID: task_master_data[i].TASK_ID })
+                  // const emp_data_found=await employee_master.find({EMP_ID:task_assignment_data[i].ASSIGNED_TO})
+                  for (t = 0; t < task_assignment_data.length; t++) {
+                        const emp_data_found = await employee_master.find({ EMP_ID: task_assignment_data[t].ASSIGNED_TO })
+
+                        const object2 = {
+                              "EMP_ID": emp_data_found[0].EMP_ID,
+                              "EMP_NAME": emp_data_found[0].EMP_NAME,
+                              "EMP_IMAGE": emp_data_found[0].EMP_IMAGE
+                        }
+                        object1.TEAM.push(object2)
+                  }
+
+
+                  const activity_data = await task_activity_mapping.find({ TASK_ID: task_master_data[i].TASK_ID })
+                  for (j = 0; j < activity_data.length; j++) {
+                        const activity_master_data = await activity_master.find({ ACTIVITY_ID: activity_data[j].ACTIVITY_ID })
+
+                        const count_activity = await activity_master.countDocuments({ ACTIVITY_ID: activity_data[j].ACTIVITY_ID })
+                        const object3 = {
+                              "ACTIVITY_ID": activity_data[j].ACTIVITY_ID,
+                              "ACTIVITY_OWNER_COUNT": count_activity,
+                              "ACTIVITY_HEADER": activity_master_data[0].ACTIVITY_HEADER,
+                              "ACTIVITY_DESCRIPTION": activity_master_data[0].ACTIVITY_DESCRIPTION,
+                              "COMPLETION_STATUS": activity_master_data[0].COMPLETION_STATUS,
+                              "DELIGATION_STATUS": activity_data[0].DELIGATION_STATUS,
+                              "FLAG": activity_master_data[0].FLAG,
+                              "START_DATE": activity_master_data[0].START_DATE,
+                              "DUE_DATE": activity_master_data[0].DUE_DATE,
+                              "ACTIVITY_OWNER": [],
+                              "ACTIVITY_DELIGATION": [],
+                              "ATTACHMENT": []
+                        }
+                        
+                        const activity_owner_master_data = await activity_owner_master.find({ ACTIVITY_ID: activity_data[j].ACTIVITY_ID })
+                        for (m = 0; m < activity_owner_master_data.length; m++) {
+                              const emp_data_found = await employee_master.find({ EMP_ID: activity_owner_master_data[m].ACTIVITY_OWNER })
+
+                              const object4 = {
+                                    "ACTIVITY_OWNER": activity_owner_master_data[m].ACTIVITY_OWNER,
+                                    "ACTIVITY_OWNER_NAME": emp_data_found[0].EMP_NAME,
+                                    "ACTIVITY_OWNER_IMAGE": emp_data_found[0].ACTIVITY_OWNER_IMAGE
+                              }
+                              object3.ACTIVITY_OWNER.push(object4)
+                        }
+                        const activity_deligation_master_data = await activity_deligation_master.find({ ACTIVITY_ID: activity_data[j].ACTIVITY_ID })
+                        for (r = 0; r < activity_deligation_master_data.length; r++) {
+                              const emp_data_found = await employee_master.find({ EMP_ID: activity_deligation_master_data[r].DELIGATED_TO })
+                              const emp_data_found2 = await employee_master.find({ EMP_ID: activity_deligation_master_data[r].DELIGATION_FROM })
+
+
+                              const object5 = {
+                                    "DELIGATION_LEVEL": activity_deligation_master_data[r].DELIGATION_LEVEL,
+                                    "DELIGATED_TO": activity_deligation_master_data[r].DELIGATED_TO,
+                                    "DELIGATED_TO_NAME": emp_data_found[0].EMP_NAME,
+                                    "DELIGATED_TO_IMAGE": emp_data_found[0].EMP_IMAGE,
+                                    "DELIGATED_FROM": activity_deligation_master_data[r].DELIGATION_FROM,
+                                    "DELIGATED_FROM_NAME": emp_data_found2[0].EMP_NAME,
+                                    "DELIGATED_FROM_IMAGE": emp_data_found2[0].EMP_IMAGE
+                              }
+                              object3.ACTIVITY_DELIGATION.push(object5)
+
+                        }
+
+                        const activity_attachment_data = await activity_attachment.find({ ACTIVITY_ID: activity_data[j].ACTIVITY_ID })
+
+                        for (g = 0; g < activity_attachment_data.length; g++) {
+                              object3.ATTACHMENT.push({ ACTIVITY_ATTACHMENT: activity_attachment_data[g].ACTIVITY_ATTACHMENT })
+
+                        }
+                        object1.ACTIVITY.push(object3)
+                  }
+                  const task_attachment_data = await task_attachment.find({ TASK_ID: task_master_data[i].TASK_ID })
+                  for (h = 0; h < task_attachment_data.length; h++) {
+                        object1.ATTACHMENT.push({ TASK_ATTACHMENT: task_attachment_data[h].TASK_ATTACHMENT })
+                  }
+
+                  array1.push(object1)
+
+            }
+            res.send(array1)
+
+
+      }
+      catch (error) {
+            //console.log(error)
+            res.status(404).send("error")
+
+      }
+}
+
+const getMyDeligatedTask=async(req,res)=>{
+      try{
+            const array1=[]
+const DELIGATED_TO=req.query.id
+const ACTIVITY_ID = "ACTIVITY_ID"; 
+const activity_deligation_master_data=await activity_deligation_master.distinct(ACTIVITY_ID,{DELIGATED_TO:DELIGATED_TO});
+
+const task_activity_mapping_data=await task_activity_mapping.find({ACTIVITY_ID:{$in:activity_deligation_master_data}})
+for(i=0;i<task_activity_mapping_data.length;i++){
+      const task_master_data=await task_master.find({TASK_ID:task_activity_mapping_data[i].TASK_ID})
+
+      const emp_data=await employee_master.find({EMP_ID:task_master_data[0].CREATED_BY})
+
+      const activity_count=await task_activity_mapping.countDocuments({TASK_ID:task_activity_mapping_data[i].TASK_ID})
+
+      const object1={
+            "NO_OF_ACTIVITIES":activity_count,
+            "TASK_ID":task_activity_mapping_data[i].TASK_ID,
+            "TASK_NAME":task_master_data[0].TASK_NAME,
+            "START_DATE":task_master_data[0].START_DATE,
+            "COMPLETION_STATUS":task_master_data[0].COMPLETION_STATUS,
+            "CREATED_BY":task_master_data[0].CREATED_BY,
+            "CREATED_BY_NAME":emp_data[0].EMP_NAME,
+            "CREATED_BY_IMAGE":emp_data[0].EMP_IMAGE,
+            "DUE_DATE":task_master_data[0].DUE_DATE,
+            "PRIORITY":task_master_data[0].PRIORITY,
+            "NOTES":task_master_data[0].NOTES,
+            "UPDATED_ON":task_master_data[0].UPDATED_ON,
+            "COLOR":task_master_data[0].COLOR,
+            "FLAG":task_master_data[0].FLAG,
+            "ASSIGNED_TO":[]
+      }
+      const task_assignment_data=await task_assignment.find({TASK_ID:task_activity_mapping_data[i].TASK_ID})
+      for(j=0;j<task_assignment_data.length;j++){
+      const emp_data2=await employee_master.find({EMP_ID:task_assignment_data[0].ASSIGNED_TO})
+
+      const object2={
+            "EMP_ID":task_assignment_data[j].ASSIGNED_TO,
+            "EMP_NAME":emp_data2[0].EMP_NAME,
+            "EMP_IMAGE":emp_data2[0].EMP_IMAGE
+      }
+      object1.ASSIGNED_TO.push(object2)
+      }
+      array1.push(object1)
+}
+res.send(array1)
+      }
+      catch(error){
+          //  console.log(error)
+            res.status(404).send("error")
+      }
+}
+
+const getMyAssignedTask=async(req,res)=>{
+      try{
+         const ASSIGNED_TO=req.query.id
+const array1=[]
+         const TASK_ID = "TASK_ID"; 
+const task_assignment_data=await task_assignment.distinct(TASK_ID,{ASSIGNED_TO:ASSIGNED_TO});
+// console.log(task_assignment_data)
+for(i=0;i<task_assignment_data.length;i++){
+      const task_master_data=await task_master.find({TASK_ID:task_assignment_data[i]})
+// console.log(task_master_data[0])
+      const emp_data=await employee_master.find({EMP_ID:task_master_data[0].CREATED_BY})
+
+      const activity_count=await task_activity_mapping.countDocuments({TASK_ID:task_assignment_data[i].TASK_ID})
+
+      const object1={
+            "NO_OF_ACTIVITIES":activity_count,
+            "TASK_ID":task_master_data[0].TASK_ID,
+            "TASK_NAME":task_master_data[0].TASK_NAME,
+            "START_DATE":task_master_data[0].START_DATE,
+            "COMPLETION_STATUS":task_master_data[0].COMPLETION_STATUS,
+            "CREATED_BY":task_master_data[0].CREATED_BY,
+            "CREATED_BY_NAME":emp_data[0].EMP_NAME,
+            "CREATED_BY_IMAGE":emp_data[0].EMP_IMAGE,
+            "DUE_DATE":task_master_data[0].DUE_DATE,
+            "PRIORITY":task_master_data[0].PRIORITY,
+            "NOTES":task_master_data[0].NOTES,
+            "UPDATED_ON":task_master_data[0].UPDATED_ON,
+            "COLOR":task_master_data[0].COLOR,
+            "FLAG":task_master_data[0].FLAG,
+            "ASSIGNED_TO":[]
+      }
+      const task_assignment_data2=await task_assignment.find({TASK_ID:task_assignment_data[i]})
+      for(j=0;j<task_assignment_data2.length;j++){
+      const emp_data2=await employee_master.find({EMP_ID:task_assignment_data2[0].ASSIGNED_TO})
+
+      const object2={
+            "EMP_ID":task_assignment_data2[j].ASSIGNED_TO,
+            "EMP_NAME":emp_data2[0].EMP_NAME,
+            "EMP_IMAGE":emp_data2[0].EMP_IMAGE
+      }
+      object1.ASSIGNED_TO.push(object2)
+      }
+      array1.push(object1)
+      }
+      res.send(array1)
+}
+      catch(error){
+            //console.log(error)
+            res.status(404).send("error")
+      }
+}
+const updateTask=async(req,res)=>{
+      try{
+const TASK_ID=req.query.id
+const PRIORITY=req.body.PRIORITY
+const COLOR=req.body.COLOR
+const FLAG=req.body.FLAG
+const DUE_DATE=req.body.DUE_DATE
+const NOTES=req.body.NOTES
+const ASSIGNED_TO=req.body.ASSIGNED_TO //array
+const CREATED_BY=req.body.CREATED_BY
+
+const task_master_update=await task_master.findOneAndUpdate({TASK_ID:TASK_ID},{$set:{PRIORITY:PRIORITY,COLOR:COLOR,DUE_DATE:DUE_DATE,NOTES:NOTES,FLAG:FLAG}})
+
+const task_assignment_delete=await task_assignment.deleteMany({TASK_ID:TASK_ID})
+
+for(i=0;i<ASSIGNED_TO.length;i++)
+{
+      const task_assignment_update=await task_assignment.insertMany({TASK_ID:TASK_ID,ASSIGNED_TO:ASSIGNED_TO[i],FLAG:1})
+}  
+
+const task_activity_mapping_delete=await task_activity_mapping.find({TASK_ID:TASK_ID})
+for(j=0;j<task_activity_mapping_delete.length;j++){
+const activity_owner_data=await activity_owner_master.deleteMany({ACTIVITY_ID:task_activity_mapping_delete[j].ACTIVITY_ID,ACTIVITY_OWNER:{$nin:ASSIGNED_TO}})
+}
+res.send("Task updated Successfully")
+}
+      catch(error){
+            //console.log(error)
+            res.status(404).send("error")
+      }
+}
+
+
+// const updateActivity=async(req,res)=>{
+//       try{
+// const ACTIVITY_ID=req.query.id
+// const FLAG=req.body.FLAG
+// const COMPLETION_STATUS=req.body.COMPLETION_STATUS
+// const ACTIVITY_DESCRIPTION=req.body.ACTIVITY_DESCRIPTION
+// const ACTIVITY_OWNER=req.body.ACTIVITY_OWNER //array
+// const DUE_DATE=req.body.DUE_DATE
+// const TASK_STATUS=0
+// const activity_master_update=await activity_master.findOneAndUpdate({ACTIVITY_ID:ACTIVITY_ID},{$set:{ACTIVITY_DESCRIPTION:ACTIVITY_DESCRIPTION,DUE_DATE:DUE_DATE,COMPLETION_STATUS:COMPLETION_STATUS,FLAG:FLAG}})
+
+// const task_activity_mapping_id=await task_activity_mapping.find({ACTIVITY_ID:ACTIVITY_ID})
+
+// const task_activity_mapping_data=await task_activity_mapping.find({TASK_ID:task_activity_mapping_id[0].TASK_ID})
+// for(i=0;i<task_activity_mapping_data.length;i++){
+//       const activity_master_data=await activity_master.find({ACTIVITY_ID:task_activity_mapping_data[i].ACTIVITY_ID,FLAG:1})
+//       for(j=0;j<activity_master_data.length;j++){
+//       for(j=0;j<activity_master_data.length;j++){
+//             const ACT_ID=activity_master_data[J].ACTIVITY_ID
+//             const count=j+1
+
+//             const activity_master_DATA=await activity_master.find({ACTIVITY_ID:ACT_ID})
+
+//              TASK_STATUS=TASK_STATUS+activity_master_DATA[0].STATUS
+//       }
+// }
+//       }
+// }
+//       catch(error){
+//             console.log(error)
+//             res.status(404).send("error")
+//       }
+// }
 module.exports = {
-      assignedTaskPriorityChart, assignedTaskStatusChart, assignedTeamStatusChart, createActivity, createActivityMob, createTaskMob, createTask, deleteActivityMob, deleteTaskMob, deligatedTaskPriorityChart, deligatedTaskStatusChart, deligatedTeamStatusChart, getAllActivityByEmpMob, uploadTaskAttachmentMob,uploadTaskAttachment,uploadActivityAttachmentMob,uploadActivityAttachment
+      getTaskByEmp, assignedTaskPriorityChart, assignedTaskStatusChart, assignedTeamStatusChart, createActivity, createActivityMob, createTaskMob, createTask, deleteActivityMob, deleteTaskMob, deligatedTaskPriorityChart, deligatedTaskStatusChart, deligatedTeamStatusChart, getAllActivityByEmpMob, uploadTaskAttachmentMob, uploadTaskAttachment, uploadActivityAttachmentMob, uploadActivityAttachment, getTaskDetail,getMyDeligatedTask,getMyAssignedTask,updateTask
 }
