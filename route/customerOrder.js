@@ -10,6 +10,7 @@ router.get("/getCustomerOrderByCustID",controller.getCustomerOrderByCustID)
 router.get("/getCustomerOrderByCustIDMob.php",controller.getCustomerOrderByCustIDMob)
 router.get("/getCustomerOrderByEmpIDMob.php",controller.getCustomerOrderByEmpIDMob)
 router.get("/getCustomerOrderDetail",controller.getCustomerOrderDetail)
+router.get("/skuListByCustomerId",controller.skuListByCustomerId)
 
 
 module.exports=router

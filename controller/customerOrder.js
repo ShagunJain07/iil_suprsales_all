@@ -28,6 +28,8 @@ const emp_region_mapping=require("../model/emp_region_mapping")
 
 const stock_master=require("../model/stock_master")
 
+const material_group_master=require("../model/material_group_master")
+
 const createOrder = async (req, res) => {
       try {
 
@@ -456,26 +458,59 @@ array1.push(object1)
 const skuListByCustomerId=async(req,res)=>{
       try{
             const CUSTOMER_ID=req.query.id
+const array1=[]
 const array_emp=[]
-const array_price=[]
-            const mapping=await emp_customer_mapping.find({})
+            const mapping=await emp_customer_mapping.find({CUSTOMER_ID:CUSTOMER_ID})
 
             for(i=0;i<mapping.length;i++){
 array_emp.push(mapping[i].EMP_ID)
             }
-            const region_data=await emp_region_mapping.find({EMP_ID:{$in:array_emp}})
+            const region_data=await emp_region_mapping.find({empId:{$in:array_emp}})
                for(j=0;j<region_data.length;j++)
             {
-                  array_price.push(region_data[j].REGION_ID)
-            }
-                  const price_data=await price_master.find({REGION_ID:{$in:array_price}})
+                  const region_master_data=await region_master.find({REGION_ID:region_data[j].regionId})
+
+                  const plant_master_data=await plant_master.find({REGION_ID:region_data[j].empId})
+                
             
+                  for(l=0;l<plant_master_data.length;l++){
+                        const stock_master_data=await stock_master.find({PLANT_ID:plant_master_data[l].PLANT_ID})
+                        for(m=0;m<stock_master_data.length;m++){
+                              const packing_sku_master_data=await packing_sku_master.find({SKU_ID:stock_master_data[m].SKU_ID})
+                              const packing_unit_master_data=await packing_unit_master.find({UNIT_ID:packing_sku_master_data[0].UNIT_ID})
+                              const price_master_data=await price_master.find({SKU_id:packing_sku_master_data[0].SKU_ID})
+                              const material_master=await material_group_master.find({GROUP_ID:packing_unit_master_data[0].SKU_ID})
+
+
+                              const object1={
+                                    "SKU_ID":stock_master_data[m].SKU_ID,
+                                    "SKU_DESCRIPTION":stock_master_data[m].SKU_DESCRIPTION,
+                                    "UNIT_ID":packing_sku_master_data[0].UNIT_ID,
+                                    "FACTOR":packing_sku_master_data[0].FACTOR,
+                                    "UNIT_VALUE":packing_unit_master_data[0].UNIT_VALUE,
+                                    "UNIT_TYPE":packing_unit_master_data[0].UNIT_TYPE,
+                                    "REGION_NAME":region_master_data[j].REGION_NAME,
+                                    "GROUP_ID":material_master[0].GROUP_ID,
+                                    "PRICE":price_master_data[0].PRICE,
+                                    "REGION_ID":region_data[j].regionId
+                                    
+                              }
+                              array1.push(object1)
+                        }
+                  }
+
+
+            }
+            res.send(array1)
+
             }
       catch(error){
             console.log(error)
             res.status(404).send("error")
       }
 }
+
+
 module.exports = {
-      createOrder, createOrderMob, getCustomerOrder, getCustomerOrderByCustID,getCustomerOrderByCustIDMob,getCustomerOrderByEmpIDMob,getCustomerOrderDetail
+      createOrder, createOrderMob, getCustomerOrder, getCustomerOrderByCustID,getCustomerOrderByCustIDMob,getCustomerOrderByEmpIDMob,getCustomerOrderDetail,skuListByCustomerId
 }

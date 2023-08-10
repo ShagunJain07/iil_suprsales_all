@@ -33,7 +33,8 @@ router.get("/getTaskByEmp",controller.getTaskByEmp)
 router.get("/getTaskDetail",controller.getTaskDetail)
 router.get("/getMyDeligatedTask",controller.getMyDeligatedTask)
 router.get("/getMyAssignedTask",controller.getMyAssignedTask)
-router.get("/updateTask",controller.updateTask)
+router.post("/updateTask",controller.updateTask)
+router.post("/updateActivity",controller.updateActivity)
 
 router.post(
       '/uploadTaskAttachmentMob.php',

@@ -915,39 +915,50 @@ res.send("Task updated Successfully")
 }
 
 
-// const updateActivity=async(req,res)=>{
-//       try{
-// const ACTIVITY_ID=req.query.id
-// const FLAG=req.body.FLAG
-// const COMPLETION_STATUS=req.body.COMPLETION_STATUS
-// const ACTIVITY_DESCRIPTION=req.body.ACTIVITY_DESCRIPTION
-// const ACTIVITY_OWNER=req.body.ACTIVITY_OWNER //array
-// const DUE_DATE=req.body.DUE_DATE
-// const TASK_STATUS=0
-// const activity_master_update=await activity_master.findOneAndUpdate({ACTIVITY_ID:ACTIVITY_ID},{$set:{ACTIVITY_DESCRIPTION:ACTIVITY_DESCRIPTION,DUE_DATE:DUE_DATE,COMPLETION_STATUS:COMPLETION_STATUS,FLAG:FLAG}})
+const updateActivity=async(req,res)=>{
+      try{
+const ACTIVITY_ID=req.query.id
+const FLAG=req.body.FLAG
+const COMPLETION_STATUS=req.body.COMPLETION_STATUS
+const ACTIVITY_DESCRIPTION=req.body.ACTIVITY_DESCRIPTION
+const ACTIVITY_OWNER=req.body.ACTIVITY_OWNER //array
+const DUE_DATE=req.body.DUE_DATE
+const TASK_STATUS=0
+const activity_master_update=await activity_master.findOneAndUpdate({ACTIVITY_ID:ACTIVITY_ID},{$set:{ACTIVITY_DESCRIPTION:ACTIVITY_DESCRIPTION,DUE_DATE:DUE_DATE,COMPLETION_STATUS:COMPLETION_STATUS,FLAG:FLAG}})
 
-// const task_activity_mapping_id=await task_activity_mapping.find({ACTIVITY_ID:ACTIVITY_ID})
+const task_activity_mapping_id=await task_activity_mapping.find({ACTIVITY_ID:ACTIVITY_ID})
 
-// const task_activity_mapping_data=await task_activity_mapping.find({TASK_ID:task_activity_mapping_id[0].TASK_ID})
-// for(i=0;i<task_activity_mapping_data.length;i++){
-//       const activity_master_data=await activity_master.find({ACTIVITY_ID:task_activity_mapping_data[i].ACTIVITY_ID,FLAG:1})
-//       for(j=0;j<activity_master_data.length;j++){
-//       for(j=0;j<activity_master_data.length;j++){
-//             const ACT_ID=activity_master_data[J].ACTIVITY_ID
-//             const count=j+1
+const task_activity_mapping_data=await task_activity_mapping.find({TASK_ID:task_activity_mapping_id[0].TASK_ID})
+for(i=0;i<task_activity_mapping_data.length;i++){
+      const activity_master_data=await activity_master.find({ACTIVITY_ID:task_activity_mapping_data[i].ACTIVITY_ID,FLAG:1})
+      for(j=0;j<activity_master_data.length;j++){
+            const count=0
+      for(j=0;j<activity_master_data.length;j++){
+            const ACT_ID=activity_master_data[J].ACTIVITY_ID
+             count=j+1
 
-//             const activity_master_DATA=await activity_master.find({ACTIVITY_ID:ACT_ID})
+            const activity_master_DATA=await activity_master.find({ACTIVITY_ID:ACT_ID})
 
-//              TASK_STATUS=TASK_STATUS+activity_master_DATA[0].STATUS
-//       }
-// }
-//       }
-// }
-//       catch(error){
-//             console.log(error)
-//             res.status(404).send("error")
-//       }
-// }
-module.exports = {
-      getTaskByEmp, assignedTaskPriorityChart, assignedTaskStatusChart, assignedTeamStatusChart, createActivity, createActivityMob, createTaskMob, createTask, deleteActivityMob, deleteTaskMob, deligatedTaskPriorityChart, deligatedTaskStatusChart, deligatedTeamStatusChart, getAllActivityByEmpMob, uploadTaskAttachmentMob, uploadTaskAttachment, uploadActivityAttachmentMob, uploadActivityAttachment, getTaskDetail,getMyDeligatedTask,getMyAssignedTask,updateTask
+             TASK_STATUS=TASK_STATUS+activity_master_DATA[0].STATUS
+      }
+      TASK_STATUS=TASK_STATUS/count
+      const task_master_update=await task_master_update.findOneAndUpdate({TASK_ID:task_activity_mapping_data[i].TASK_ID},{$set:{COMPLETION_STATUS:TASK_STATUS}})
+
+      await activity_owner_master.deleteMany({ACTIVITY_ID:task_activity_mapping_data[i].ACTIVITY_ID})
+
 }
+      }
+      for(m=0;m<ACTIVITY_OWNER.length;m++){
+            const activity_owner_update=await activity_owner_master.insertMany({ACTIVITY_ID:ACTIVITY_ID,ACTIVITY_OWNER:ACTIVITY_OWNER[m]})
+      }
+}
+      catch(error){
+            console.log(error)
+            res.status(404).send("error")
+      }
+}
+module.exports = {
+      getTaskByEmp, assignedTaskPriorityChart, assignedTaskStatusChart, assignedTeamStatusChart, createActivity, createActivityMob, createTaskMob, createTask, deleteActivityMob, deleteTaskMob, deligatedTaskPriorityChart, deligatedTaskStatusChart, deligatedTeamStatusChart, getAllActivityByEmpMob, uploadTaskAttachmentMob, uploadTaskAttachment, uploadActivityAttachmentMob, uploadActivityAttachment, getTaskDetail,getMyDeligatedTask,getMyAssignedTask,updateTask,updateActivity
+}
+
+
