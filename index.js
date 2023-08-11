@@ -41,7 +41,11 @@ const assign_customer=require("./route/Assign_Customer")
 const Task=require("./route/Task")
 const CustomerOrder=require("./route/customerOrder")
 const EmpOrder=require("./route/Emp_Order")
+const BeatPlan=require("./route/Beat_Plan")
 app.use("/suprsales_api/Order",EmpOrder)
+
+app.use("/suprsales_api/Beat_Plan",BeatPlan)
+
 
 app.use("/suprsales_api/customerOrder",CustomerOrder)
 
