@@ -465,22 +465,24 @@ const array_emp=[]
             for(i=0;i<mapping.length;i++){
 array_emp.push(mapping[i].EMP_ID)
             }
-            const region_data=await emp_region_mapping.find({empId:{$in:array_emp}})
+            const region_data=await emp_region_mapping.find({EMP_ID:{$in:array_emp}})
+// console.log("region_data",region_data)
                for(j=0;j<region_data.length;j++)
             {
-                  const region_master_data=await region_master.find({REGION_ID:region_data[j].regionId})
+                  const region_master_data=await region_master.find({REGION_ID:region_data[j].REGION_ID})
 
-                  const plant_master_data=await plant_master.find({REGION_ID:region_data[j].empId})
+                  const plant_master_data=await plant_master.find({REGION_ID:region_data[j].REGION_ID})
                 
-            
+            // console.log(plant_master_data)
                   for(l=0;l<plant_master_data.length;l++){
                         const stock_master_data=await stock_master.find({PLANT_ID:plant_master_data[l].PLANT_ID})
                         for(m=0;m<stock_master_data.length;m++){
                               const packing_sku_master_data=await packing_sku_master.find({SKU_ID:stock_master_data[m].SKU_ID})
                               const packing_unit_master_data=await packing_unit_master.find({UNIT_ID:packing_sku_master_data[0].UNIT_ID})
-                              const price_master_data=await price_master.find({SKU_id:packing_sku_master_data[0].SKU_ID})
-                              const material_master=await material_group_master.find({GROUP_ID:packing_unit_master_data[0].SKU_ID})
-
+                              const price_master_data=await price_master.find({SKU_ID:packing_sku_master_data[0].SKU_ID})
+                              console.log(price_master_data[0])
+                              const material_master=await material_group_master.find({GROUP_ID:packing_sku_master_data[0].GROUP_ID})
+// console.log("material_master",material_master)
 
                               const object1={
                                     "SKU_ID":stock_master_data[m].SKU_ID,
@@ -492,7 +494,7 @@ array_emp.push(mapping[i].EMP_ID)
                                     "REGION_NAME":region_master_data[j].REGION_NAME,
                                     "GROUP_ID":material_master[0].GROUP_ID,
                                     "PRICE":price_master_data[0].PRICE,
-                                    "REGION_ID":region_data[j].regionId
+                                    "REGION_ID":region_data[j].REGION_ID
                                     
                               }
                               array1.push(object1)
