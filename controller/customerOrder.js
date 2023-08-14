@@ -478,9 +478,10 @@ array_emp.push(mapping[i].EMP_ID)
                         const stock_master_data=await stock_master.find({PLANT_ID:plant_master_data[l].PLANT_ID})
                         for(m=0;m<stock_master_data.length;m++){
                               const packing_sku_master_data=await packing_sku_master.find({SKU_ID:stock_master_data[m].SKU_ID})
+                              //console.log(packing_sku_master_data[0])
                               const packing_unit_master_data=await packing_unit_master.find({UNIT_ID:packing_sku_master_data[0].UNIT_ID})
                               const price_master_data=await price_master.find({SKU_ID:packing_sku_master_data[0].SKU_ID})
-                              console.log(price_master_data[0])
+                              //console.log(price_master_data[0])
                               const material_master=await material_group_master.find({GROUP_ID:packing_sku_master_data[0].GROUP_ID})
 // console.log("material_master",material_master)
 

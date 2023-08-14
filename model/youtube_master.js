@@ -1,25 +1,20 @@
 const mongoose = require('mongoose');
 
 const youtubeSchema = new mongoose.Schema({
-  youtube_id: {
-    type: String,
-    required: true
+  YOUTUBE_ID: {
+    type: String
   },
-  date: {
-    type: Date,
-    required: true
+  DATE: {
+    type: Date
   },
-  youtube_link: {
-    type: String,
-    required: true
+  YOUTUBE_LINK: {
+    type: String
   },
-  header: {
-    type: String,
-    required: true
+  HEADER: {
+    type: String
   },
-  status: {
-    type: Boolean,
-    required: true
+  STATUS: {
+    type: Boolean
   }
 });
 

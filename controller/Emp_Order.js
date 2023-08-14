@@ -6,6 +6,7 @@ const farmer_master = require("../model/farmer_master")
 const distributor_master = require("../model/distributor_master");
 const retailer_master = require("../model/retailer_master")
 const plant_master = require("../model/plant_master")
+const packing_sku_master=require("../model/packing_sku_master")
 const createOrder = async (req, res) => {
       try {
             const generateOrderId = () => {
@@ -558,4 +559,74 @@ const downloadAllEmpOrder=async(req,res)=>{
             res.status(404).send("error")
       }
 }
-module.exports = { createOrder, getOrderByLoginEmp,getPlantOrder,getOrderByEmp,downloadAllEmpOrder}
+
+const orderByCustomerIdMob=async(req,res)=>{
+      try{
+
+            const CUSTOMER_ID=req.query.id
+
+            const array1=[]
+            const order_master_data=await order_master.find({CUSTOMER_ID:CUSTOMER_ID})
+
+            for(i=0;i<order_master_data.length;i++){
+                  const plant_data=await plant_master.find({PLANT_ID:order_master_data[i].PLANT_ID})
+                  const emp_data=await employee_model.find({EMP_ID:order_master_data[i].CREATED_BY})
+console.log(order_master_data[i].CREATED_BY)
+                  const object1={}
+                  if(order_master_data[i].CUST_TYPE_CODE=='DIS'){
+                        const distributor_master_data=await distributor_master.find({DISTRIBUTOR_ID:order_master_data[i].CUSTOMER_ID})
+
+                        console.log(distributor_master_data)
+                        object1[CUSTOMER_ID]=distributor_master_data[0].DISTRIBUTOR_ID
+                      //object1[CUSTOMER_NAME]=distributor_master_data[0].DISTRIBUTOR_NAME
+                  }
+                  else if(order_master_data[i].CUST_TYPE_CODE=='FAR'){
+                        const farmer_master_data=await farmer_master.find({FARMER_ID:order_master_data[i].CUSTOMER_ID})
+
+                        object1[CUSTOMER_ID]=farmer_master_data[0].FARMER_ID
+                        object1[CUSTOMER_NAME]=farmer_master_data[0].FARMER_NAME
+                  }
+                  else if(order_master_data[i].CUST_TYPE_CODE=='RET'){
+                        const retailer_master_data=await retailer_master.find({RETAILER_ID:order_master_data[i].CUSTOMER_ID})
+
+                        object1[CUSTOMER_ID]=retailer_master_data[0].RETAILER_ID
+                        object1[CUSTOMER_NAME]=retailer_master_data[0].RETAILER_NAME
+                  }
+                  const object2={
+                        ORDER_ID:order_master_data[i].ORDER_ID,
+                        ORDER_DATE:order_master_data[i].ORDER_DATE,
+                        PLACED_BY:emp_data[0].EMP_NAME,
+                        TOTAL_ORDER_VALUE:order_master_data[i].TOTAL_ORDER_VALUE,
+                        PLANT_NAME:plant_data[0].PLANT_DESCRIPTION,
+                        REMARKS:order_master_data[i].REMARKS,
+                        STATUS:order_master_data[i].STATUS,
+                        ORDER_DETAIL:[]
+
+                  }
+                 // array1.push({...object1,...object2})
+
+                  const order_details=await order_detail.find({ORDER_ID:order_master_data[i].ORDER_ID})
+
+                  for(j=0;j<order_details.length;j++){
+                        const packing_sku_data=await packing_sku_master.find({SKU_ID:order_details[j].SKU_ID})
+
+                        const object3={
+                              SKU_ID:order_details[j].SKU_ID,
+                              SKU_DESCRIPTION:packing_sku_data[0].SKU_DESCRIPTION,
+                              SKU_QUANTITY:order_details[j].SKU_QUANTITY,
+                              TOTAL_SKU_VALUE:order_details[j].TOTAL_SKU_VALUE
+                        }
+                        object2.ORDER_DETAIL.push(object3)
+                  }
+
+                  array1.push({...object1,...object2})
+
+            }
+            res.send(array1)
+      }
+      catch (error) {
+            console.log(error)
+            res.status(404).send("error")
+      }
+}
+module.exports = { createOrder, getOrderByLoginEmp,getPlantOrder,getOrderByEmp,downloadAllEmpOrder,orderByCustomerIdMob}

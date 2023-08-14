@@ -28,6 +28,31 @@ const authorization=require("./route/authorization")
 const usermapping=require("./route/user_mapping")
 app.use("/suprsales_api/UserMapping",usermapping)
 const Packaging_Unit=require("./route/Packaging_Unit")
+const Attendance=require("./route/Attendance")
+const Emp_DailyActivity=require("./route/Emp_Daily_Activity")
+const YouTube=require("./route/YouTube")
+const employee=require("./route/employee")
+app.use("/suprsales_api/Employee",employee)
+const ledger=require("./route/ledger")
+app.use("/suprsales_api/Ledger",ledger)
+const Level=require("./route/level")
+app.use("/suprsales_api/Level",Level)
+
+const customer = require("./route/customer");
+app.use("/suprsales_api/Customer",customer)
+
+const stock=require("./route/stock")
+app.use("/suprsales_api/Stock",stock)
+const Claim=require("./route/Claim")
+app.use("/suprsales_api/Claim",Claim)
+const customer_dashboard=require("./route/Customer_Dashborad")
+app.use("/suprsales_api/Customer_Dashboard",customer_dashboard)
+app.use("/suprsales_api/YouTube",YouTube)
+
+app.use("/suprsales_api/Emp_DailyActivity",Emp_DailyActivity)
+
+app.use("/suprsales_api/Attendance",Attendance)
+
 app.use("/suprsales_api/Packaging_Unit",Packaging_Unit)
 
 const Material_Group=require("./route/Material_Group")
