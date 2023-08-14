@@ -99,6 +99,7 @@ res.send(array1)
 }
       }
       catch(error){
+            console.log(error)
             res.send("error in function employee login")
       }
 }

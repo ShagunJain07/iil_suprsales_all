@@ -190,7 +190,7 @@ const create_retailer = async (req, res) => {
 
 const customer_login = async (req, res) => {
       try{
-      // console.log("customer_login")
+       console.log("customer_login")
       const id=req.query.distributor_id
       const password=req.query.password
 
